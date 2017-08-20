@@ -1,7 +1,9 @@
 <html>
   <head>
     <title>Memory Game</title>
+    <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
@@ -39,16 +41,25 @@
         <div class="key" data-key="77">m</div>
       </div>
     </div>
+
+    <script src="js/sweetalert.min.js"></script>
     <script>
       const levels = 15
       let keys = generateKeys(levels)
 
       function nextLevel(currentLevel){
         if(currentLevel == levels){
-          return alert('Ganaste!!')
+          return swal({
+            title: 'Ganaste',
+            type: 'success'
+          })
         }
 
-        alert(`Nivel ${currentLevel + 1}`)
+        swal({
+          timer: 1000,
+          title: `Nivel ${currentLevel + 1}`,
+          showConfirmButton: false
+        })
 
         for (let i = 0; i <= currentLevel; i++) {
           setTimeout(() => activate(keys[i]), 1000 * (i+1))
@@ -70,7 +81,19 @@
           } else {
             activate(e.keyCode, { fail: true})
             window.removeEventListener('keydown', onkeydown)
-            alert(`Perdiste!!`)
+            swal({
+              title: 'Perdiste',
+              text: 'Te gustaría jugar nuevamente?',
+              showCancelButton: true,
+              confirmButtonText: 'Si',
+              cancelButtonText: 'No',
+              closeOnConfirm: true
+            }, function(ok){
+              if (ok) {
+                keys = generateKeys(levels)
+                nextLevel(0)
+              }
+            })
           }
         }
       }
