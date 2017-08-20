@@ -43,6 +43,40 @@
       const levels = 15
       let keys = generateKeys(levels)
 
+      function nextLevel(currentLevel){
+        if(currentLevel == levels){
+          return alert('Ganaste!!')
+        }
+
+        alert(`Nivel ${currentLevel + 1}`)
+
+        for (let i = 0; i <= currentLevel; i++) {
+          setTimeout(() => activate(keys[i]), 1000 * (i+1))
+        }
+
+        let i = 0
+        let currentKey = keys[i]
+        window.addEventListener('keydown', onkeydown);
+
+        function onkeydown(e){
+          if (e.keyCode == currentKey) {
+            activate(currentKey, {success: true})
+            i++
+            if (i > currentLevel) {
+              window.removeEventListener('keydown', onkeydown)
+              setTimeout(() => nextLevel(i), 1500)
+            }
+            currentKey = keys[i]
+          } else {
+            activate(e.keyCode, { fail: true})
+            window.removeEventListener('keydown', onkeydown)
+            alert(`Perdiste!!`)
+          }
+        }
+      }
+
+      nextLevel(0)
+
       function generateKeys(levels){
         return new Array(levels).fill(0).map(generateKeyRandom)
       }
@@ -62,9 +96,9 @@
         const element = getElementByKeyCode(keyCode)
         element.classList.add('active')
 
-        if(options.success){
+        if (options.success) {
           element.classList.add('success')
-        }else if(options.fail){
+        } else if (options.fail) {
           element.classList.add('fail')
         }
 
